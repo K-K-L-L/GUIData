@@ -1,12 +1,24 @@
 import tkinter as tk
 import json
+import email_validator
 
 def save_data():
+    name = name_entry.get()
+    age = age_entry.get()
+    email = email_entry.get()
     data = {
-        "name": name_entry.get(),
-        "age": age_entry.get(),
-        "email": email_entry.get()
+        "name": name,
+        "age": age,
+        "email": email
     }
+    if not name:
+        return label.config(text="Please enter your name", fg="#A42A04")
+    if not age.isdigit():
+        return label.config(text="Please enter a valid age", fg="#A42A04")
+    try:
+        email_validator.validate_email(email)
+    except email_validator.EmailNotValidError as e:
+        return label.config(text=str(e), fg="#A42A04")
     try:
         with open("data.json", "r", encoding="utf-8") as f:
           existing_data = json.load(f)
@@ -27,7 +39,7 @@ def save_data():
     label.config(text="Data saved successfully!", fg="green")
 
 root = tk.Tk()
-root.geometry("200x350") # Set the window size to 200 pixels wide by 350 pixels tall
+root.geometry("400x350") # Set the window size to 200 pixels wide by 350 pixels tall
 
 root.title("Save Data to JSON")
 root.config(bg="#a69c9c")
